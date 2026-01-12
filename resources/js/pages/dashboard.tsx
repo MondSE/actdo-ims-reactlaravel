@@ -24,11 +24,18 @@ interface DashboardStats {
     licenses: LicenseStats;
 }
 
-export default function Dashboard() {
-    const page = usePage();
+// Define the props your page provides
+interface PageProps {
+    stats?: DashboardStats;
+}
 
-    // Use optional chaining and fallback
-    const stats: DashboardStats = (page.props as any).stats ?? {
+export default function Dashboard() {
+    // Instead of using <PageProps> generic (which can cause redline), use type assertion
+    const page = usePage();
+    const props = page.props as PageProps; // safe cast
+
+    // Safe fallback if stats is undefined
+    const stats: DashboardStats = props.stats ?? {
         accidents: 0,
         employees: 0,
         complaints: 0,
