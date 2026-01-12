@@ -2,7 +2,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -25,7 +25,7 @@ interface License {
     transaction: String;
     date_transaction: string;
     official_receipt_no: string;
-    amoutt_payment: number;
+    amount_payment: number;
     type_vehicle: string;
 }
 
@@ -46,52 +46,52 @@ export default function Licenses() {
         'towing' | 'ticket' | 'impounded' | ''
     >('');
     const [loading, setLoading] = useState(false);
-    const [selectLicense, setSelectLIcense] = useState<any | null>(null);
+    const [selectLicense, setSelectLicense] = useState<License | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const openViewModal = (license: any) => {
-        setSelectLIcense(license);
-        setIsModalOpen(true);
-    };
-
-    const closeViewModal = () => {
-        setSelectLIcense(null);
-        setIsModalOpen(false);
-    };
 
     const formatDate = (dateString: string) => {
         if (!dateString) return '';
         return new Date(dateString).toISOString().split('T')[0];
     };
 
-    const fetchLicenses = async (page = 1) => {
-        setLoading(true);
-        try {
-            const response = await axios.get('/api/licenses', {
-                params: { search, ticket_type: ticketType, page },
-            });
-
-            // Make sure we map the backend response to state
-            // $licenses should have: data, current_page, last_page
-            setLicenses({
-                data: response.data.data ?? [], // fallback to empty array
-                current_page: response.data.current_page ?? 1,
-                last_page: response.data.last_page ?? 1,
-            });
-
-            console.log('Licenses fetched:', response.data); // debug
-        } catch (err) {
-            console.error('Error fetching licenses:', err);
-            setLicenses({ data: [], current_page: 1, last_page: 1 });
-        } finally {
-            setLoading(false);
-        }
+    const openViewModal = (license: License) => {
+        setSelectLicense(license);
+        setIsModalOpen(true);
     };
 
-    // Initial load
+    const closeViewModal = () => {
+        setSelectLicense(null);
+        setIsModalOpen(false);
+    };
+
+    const fetchLicenses = useCallback(
+        async (page = 1) => {
+            setLoading(true);
+            try {
+                const response = await axios.get('/api/licenses', {
+                    params: { search, ticket_type: ticketType, page },
+                });
+                setLicenses({
+                    data: response.data.data ?? [],
+                    current_page: response.data.current_page ?? 1,
+                    last_page: response.data.last_page ?? 1,
+                });
+            } catch (err) {
+                console.error(err);
+                setLicenses({ data: [], current_page: 1, last_page: 1 });
+            } finally {
+                setLoading(false);
+            }
+        },
+        [search, ticketType],
+    );
+
     useEffect(() => {
-        fetchLicenses();
-    }, []);
+        const fetchData = async () => {
+            await fetchLicenses();
+        };
+        fetchData();
+    }, [search, ticketType]);
 
     const handleFilter = (e: React.FormEvent) => {
         e.preventDefault();
