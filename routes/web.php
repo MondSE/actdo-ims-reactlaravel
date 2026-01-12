@@ -26,5 +26,8 @@ Route::get('/licenses', [LicenseController::class, 'index'])
 // JSON API route
 Route::get('/api/licenses', [LicenseController::class, 'apiIndex'])
      ->middleware(['auth', 'verified']);
-     
+
+Route::get('/licenses/{license}', [LicenseController::class, 'show']);
+Route::get('/licenses/{license}/edit', [LicenseController::class, 'edit']);
+
 require __DIR__.'/settings.php';

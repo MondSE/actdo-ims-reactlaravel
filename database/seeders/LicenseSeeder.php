@@ -18,7 +18,7 @@ class LicenseSeeder extends Seeder
 
         $ticketTypes = ['towing', 'ticket', 'impounded'];
         $vehicleTypes = ['Single', 'Sedan', 'Truck', 'PUJ', 'Tricycle', 'Bus', 'SUV'];
-        $transactionTypes = ['Payed','Pending','Surrender'];
+        $transactionTypes = ['Paid','Pending','Surrender'];
         $offices = ['ACTDO', 'PTRO', 'PNP'];
 
         for ($i = 0; $i < 30; $i++) {
