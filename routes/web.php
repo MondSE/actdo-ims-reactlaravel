@@ -16,6 +16,8 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
+      Route::get('dashboard/revenue-per-year', [DashboardController::class, 'revenuePerYear'])
+        ->name('dashboard.revenue'); // JSON endpoint for chart
 });
 
 // Inertia page

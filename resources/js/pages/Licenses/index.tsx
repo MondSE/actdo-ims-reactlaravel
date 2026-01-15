@@ -148,6 +148,9 @@ export default function Licenses() {
                                             Ticket No
                                         </th>
                                         <th className="px-4 py-3 font-semibold tracking-wide text-gray-600 uppercase dark:text-gray-300">
+                                            Ticket Type
+                                        </th>
+                                        <th className="px-4 py-3 font-semibold tracking-wide text-gray-600 uppercase dark:text-gray-300">
                                             Name
                                         </th>
                                         <th className="px-4 py-3 font-semibold tracking-wide text-gray-600 uppercase dark:text-gray-300">
@@ -156,9 +159,7 @@ export default function Licenses() {
                                         <th className="px-4 py-3 font-semibold tracking-wide text-gray-600 uppercase dark:text-gray-300">
                                             Plate
                                         </th>
-                                        <th className="px-4 py-3 font-semibold tracking-wide text-gray-600 uppercase dark:text-gray-300">
-                                            Ticket Type
-                                        </th>
+
                                         <th className="px-4 py-3 font-semibold tracking-wide text-gray-600 uppercase dark:text-gray-300">
                                             Violation
                                         </th>
@@ -196,17 +197,6 @@ export default function Licenses() {
                                                 <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
                                                     {license.ticket_no}
                                                 </td>
-                                                <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
-                                                    {license.full_name}
-                                                </td>
-                                                <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
-                                                    {license.driver_license_no}
-                                                </td>
-
-                                                <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
-                                                    {license.plate_no}
-                                                </td>
-
                                                 <td className="px-4 py-3 capitalize">
                                                     <span
                                                         className={`rounded-lg px-2 py-1 text-xs font-semibold ${
@@ -221,6 +211,16 @@ export default function Licenses() {
                                                     >
                                                         {license.ticket_types}
                                                     </span>
+                                                </td>
+                                                <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
+                                                    {license.full_name}
+                                                </td>
+                                                <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
+                                                    {license.driver_license_no}
+                                                </td>
+
+                                                <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
+                                                    {license.plate_no}
                                                 </td>
 
                                                 <td className="px-4 py-3 text-gray-700 dark:text-gray-300">

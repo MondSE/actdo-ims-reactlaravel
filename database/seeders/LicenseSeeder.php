@@ -21,7 +21,15 @@ class LicenseSeeder extends Seeder
         $transactionTypes = ['Paid','Pending','Surrender'];
         $offices = ['ACTDO', 'PTRO', 'PNP'];
 
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 52560; $i++) {
+
+        // Random date between 2014 and 2025
+            $year = rand(2014, 2025);
+            $month = rand(1, 12);
+            $day = rand(1, 28); // safe day to avoid invalid dates
+            $dateApprehend = sprintf("%04d-%02d-%02d", $year, $month, $day);
+
+
             License::create([
                 'Ticket_No' => $faker->unique()->numberBetween(100000, 999999),
                 'Ticket_Types' => $faker->randomElement($ticketTypes),
@@ -32,12 +40,12 @@ class LicenseSeeder extends Seeder
                 'Full_Name' => $faker->name(),
                 'Violation' => $faker->sentence(3),
                 'Location' => $faker->city(),
-                'Date_Apprehend' => $faker->date(),
+                'Date_Apprehend' => $dateApprehend,
                 'Type_Vehicle' => $faker->randomElement($vehicleTypes),
                 'Office' => $faker->randomElement($offices),
                 'Amount_Payment' => $faker->numberBetween(500, 5000),
                 'Discount_Amount_Payment' => $faker->numberBetween(0, 500),
-                'Date_Transaction' => $faker->date(),
+                'Date_Transaction' => $dateApprehend,
                 'Official_Receipt_No' => $faker->unique()->numberBetween(100000, 999999),
                 'Discount_Ticket_No' => $faker->word(),
                 'Responsible_Name' => $faker->name(),

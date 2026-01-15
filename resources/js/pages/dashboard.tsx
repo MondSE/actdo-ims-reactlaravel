@@ -1,3 +1,4 @@
+import RevenueChart from '@/components/revenueChart';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
@@ -15,11 +16,20 @@ interface LicenseStats {
     towing: number;
     ticket: number;
     impounded: number;
+    inventory_towing: number;
+    inventory_ticket: number;
+    inventory_impounded: number;
+}
+
+interface EmployeeStats {
+    total: number;
+    active: number;
+    inactive: number;
 }
 
 interface DashboardStats {
     accidents: number;
-    employees: number;
+    employees: EmployeeStats;
     complaints: number;
     licenses: LicenseStats;
 }
@@ -37,9 +47,20 @@ export default function Dashboard() {
     // Safe fallback if stats is undefined
     const stats: DashboardStats = props.stats ?? {
         accidents: 0,
-        employees: 0,
+        employees: {
+            total: 0,
+            active: 0,
+            inactive: 0,
+        },
         complaints: 0,
-        licenses: { towing: 0, ticket: 0, impounded: 0 },
+        licenses: {
+            towing: 0,
+            ticket: 0,
+            impounded: 0,
+            inventory_towing: 0,
+            inventory_ticket: 0,
+            inventory_impounded: 0,
+        },
     };
 
     console.log('Stats:', stats);
@@ -50,12 +71,15 @@ export default function Dashboard() {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">
                     <DashboardCard label="Accidents" value={stats.accidents} />
-                    <DashboardCard label="Employees" value={stats.employees} />
+                    <DashboardCard
+                        label="Employees"
+                        value={stats.employees.active}
+                    />
                     <DashboardCard
                         label="Complaints"
                         value={stats.complaints}
                     />
-                    <DashboardCard
+                    {/* <DashboardCard
                         label="Towing"
                         value={stats.licenses.towing}
                     />
@@ -66,10 +90,24 @@ export default function Dashboard() {
                     <DashboardCard
                         label="Impounded"
                         value={stats.licenses.impounded}
+                    /> */}
+                </div>
+                <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+                    <DashboardCard
+                        label="Inventory Towing"
+                        value={stats.licenses.inventory_towing}
+                    />
+                    <DashboardCard
+                        label="Inventory Ticket"
+                        value={stats.licenses.inventory_ticket}
+                    />
+                    <DashboardCard
+                        label="Inventory Impounded"
+                        value={stats.licenses.inventory_impounded}
                     />
                 </div>
                 <div className="relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+                    <RevenueChart />
                 </div>
             </div>
         </AppLayout>
