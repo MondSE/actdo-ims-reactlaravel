@@ -101,7 +101,7 @@ export default function RevenueChart() {
     if (loading || !chartData) return <p>Loading chart...</p>;
 
     return (
-        <div className="w-full rounded-xl bg-white p-5 shadow-md dark:bg-neutral-900">
+        <div className="h-full w-full rounded-xl bg-white p-5 shadow-md dark:bg-neutral-900">
             <h2 className="mb-4 text-xl font-semibold text-gray-800 dark:text-gray-100">
                 Yearly Revenue
             </h2>
