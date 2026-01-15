@@ -6,6 +6,7 @@ use Laravel\Fortify\Features;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LicenseController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\AccidentController;
 
 
 Route::get('/', function () {
@@ -45,5 +46,12 @@ Route::get('/employees',[EmployeeController::class, 'index'])
 // JSON API route
 Route::get('/api/employees', [EmployeeController::class, 'apiIndex'])
     ->middleware(['auth', 'verified']);
+
+// Accident routes
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/accidents', [AccidentController::class, 'index'])->name('accidents.index');
+});
+
+Route::get('/api/accidents', [AccidentController::class, 'apiIndex']);
 
 require __DIR__.'/settings.php';
