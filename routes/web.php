@@ -15,12 +15,16 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-// Dashboard routes
 Route::middleware(['auth', 'verified'])->group(function () {
+    // Dashboard routes
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
       Route::get('dashboard/revenue-per-year', [DashboardController::class, 'revenuePerYear'])
         ->name('dashboard.revenue'); // JSON endpoint for chart
+
+    // Employee routes for Registration
+     Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
+    Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
 });
 
 

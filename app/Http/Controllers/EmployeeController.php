@@ -62,4 +62,34 @@ class EmployeeController extends Controller
 
         return response()->json($employees);
     }
+
+    // Show Registration From
+    public function create()
+    {
+        return Inertia::render('Employees/create');
+    }
+
+    // Store employee
+    public function store(Request $request)
+    {
+       $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'designation' => 'required|string|max:255',
+            'email' => 'required|email|unique:employees,email',
+            'contact_no' => 'nullable|string|max:20',
+            'date_hired' => 'required|date',
+            'status' => 'required|string',
+            'sss_no' => 'nullable|string|max:20',
+            'gsis_no' => 'nullable|string|max:20',
+            'phil_health_no' => 'nullable|string|max:20',
+            'tin_no' => 'nullable|string|max:20',
+            'pag_ibig_no' => 'nullable|string|max:20',
+            'salary_rate' => 'required|numeric',
+            'img_status' => 'nullable|string|max:255',
+        ]);
+
+        Employee::create($validated);
+
+        return redirect()->route('employees.create')->with('success', 'Employee registered successfully!');
+    }
 }

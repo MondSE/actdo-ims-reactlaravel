@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -106,10 +106,17 @@ export default function Employees() {
 
                     <button
                         type="submit"
-                        className="rounded bg-blue-500 px-4 py-2 text-white"
+                        className="rounded-2xl bg-blue-500 px-4 py-2 text-white"
                     >
                         Filter
                     </button>
+
+                    <Link
+                        href={'/employees/create'}
+                        className='className="rounded hover:bg-green-600" rounded-2xl bg-green-500 px-4 py-2 text-white'
+                    >
+                        Register
+                    </Link>
                 </form>
 
                 {/* TABLE */}
