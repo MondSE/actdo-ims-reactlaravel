@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Employee;
 use Inertia\Inertia;
+use App\Models\User;
+use App\Models\Notification;
 
 class EmployeeController extends Controller
 {
@@ -88,7 +90,20 @@ class EmployeeController extends Controller
             'img_status' => 'nullable|string|max:255',
         ]);
 
-        Employee::create($validated);
+        // create employee
+        $employee = Employee::create($validated);
+
+        // auto notification for all users
+        $users = User::all();
+
+        foreach ($users as $user) {
+            Notification::create([
+                'user_id' => $user->id,
+                'title' => 'New Employee Registered',
+                'message' => "{$validated['name']} has been added to {$validated['designation']}.",
+                'status' => 1,// unread
+            ]);
+        }
 
         return redirect()->route('employees.create')->with('success', 'Employee registered successfully!');
     }

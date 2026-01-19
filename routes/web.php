@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LicenseController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\AccidentController;
+use App\Http\Controllers\NotificationController;
 
 
 Route::get('/', function () {
@@ -57,5 +58,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::get('/api/accidents', [AccidentController::class, 'apiIndex']);
+
+
+// Notification routes
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Notifications
+    Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])
+        ->name('notifications.unread-count');
+
+    Route::get('/notifications/list', [NotificationController::class, 'getNotifications'])
+        ->name('notifications.list');
+
+    Route::post('/notifications/read/{id}', [NotificationController::class, 'markAsRead'])
+        ->name('notifications.markAsRead');
+
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])
+        ->name('notifications.markAllAsRead');
+});
+
 
 require __DIR__.'/settings.php';
