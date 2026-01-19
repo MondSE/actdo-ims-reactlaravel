@@ -1,3 +1,12 @@
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
@@ -121,80 +130,83 @@ export default function Accidents() {
                 {loading ? (
                     <p>Loading...</p>
                 ) : (
-                    <div className="w-full overflow-x-auto rounded-xl border border-gray-200 shadow-sm dark:border-gray-700">
-                        <table className="w-full min-w-[900px] text-left text-sm">
-                            <thead className="sticky top-0 z-10 bg-gray-50 dark:bg-gray-800">
-                                <tr>
-                                    <th className="px-4 py-3">Code</th>
-                                    <th className="px-4 py-3">Date</th>
-                                    <th className="px-4 py-3">Location</th>
-                                    <th className="px-4 py-3">Damage</th>
-                                    <th className="px-4 py-3">Fatality</th>
-                                    <th className="px-4 py-3">Injured</th>
-                                    <th className="px-4 py-3">CCTV</th>
-                                    <th className="px-4 py-3">Involved</th>
-                                    <th className="px-4 py-3">Operator</th>
-                                    <th className="px-4 py-3">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                    <div className="w-full overflow-x-auto rounded-xl border shadow-sm">
+                        <Table>
+                            <TableCaption>List of Accidents</TableCaption>
+
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Code</TableHead>
+                                    <TableHead>Date</TableHead>
+                                    <TableHead>Location</TableHead>
+                                    <TableHead>Damage</TableHead>
+                                    <TableHead>Fatality</TableHead>
+                                    <TableHead>Injured</TableHead>
+                                    <TableHead>CCTV</TableHead>
+                                    <TableHead>Involved</TableHead>
+                                    <TableHead>Operator</TableHead>
+                                    <TableHead>Action</TableHead>
+                                </TableRow>
+                            </TableHeader>
+
+                            <TableBody>
                                 {accidents.data.length === 0 ? (
-                                    <tr>
-                                        <td
-                                            colSpan={9}
+                                    <TableRow>
+                                        <TableCell
+                                            colSpan={10}
                                             className="py-6 text-center text-gray-500"
                                         >
                                             No records found
-                                        </td>
-                                    </tr>
+                                        </TableCell>
+                                    </TableRow>
                                 ) : (
                                     accidents.data.map((accident) => (
-                                        <tr
+                                        <TableRow
                                             key={accident.id}
                                             className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
                                         >
-                                            <td className="px-4 py-3">
+                                            <TableCell>
                                                 {accident.code}
-                                            </td>
-                                            <td className="px-4 py-3">
+                                            </TableCell>
+                                            <TableCell>
                                                 {formatDate(accident.date_time)}
-                                            </td>
-                                            <td className="px-4 py-3">
+                                            </TableCell>
+                                            <TableCell>
                                                 {accident.location}
-                                            </td>
-                                            <td className="px-4 py-3">
+                                            </TableCell>
+                                            <TableCell>
                                                 {accident.damage}
-                                            </td>
-                                            <td className="px-4 py-3">
+                                            </TableCell>
+                                            <TableCell>
                                                 {accident.fatality}
-                                            </td>
-                                            <td className="px-4 py-3">
+                                            </TableCell>
+                                            <TableCell>
                                                 {accident.injured}
-                                            </td>
-                                            <td className="px-4 py-3">
+                                            </TableCell>
+                                            <TableCell>
                                                 {accident.cctv}
-                                            </td>
-                                            <td className="px-4 py-3">
+                                            </TableCell>
+                                            <TableCell>
                                                 {accident.involved}
-                                            </td>
-                                            <td className="px-4 py-3">
+                                            </TableCell>
+                                            <TableCell>
                                                 {accident.operator_name}
-                                            </td>
-                                            <td className="px-4 py-3">
+                                            </TableCell>
+                                            <TableCell>
                                                 <button
                                                     onClick={() =>
                                                         openViewModal(accident)
                                                     }
-                                                    className="rounded bg-blue-500 px-3 py-1 text-white"
+                                                    className="rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600"
                                                 >
                                                     View
                                                 </button>
-                                            </td>
-                                        </tr>
+                                            </TableCell>
+                                        </TableRow>
                                     ))
                                 )}
-                            </tbody>
-                        </table>
+                            </TableBody>
+                        </Table>
                     </div>
                 )}
 

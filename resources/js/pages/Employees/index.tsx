@@ -1,7 +1,19 @@
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import axios from 'axios';
+import { FolderSymlink } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -96,7 +108,7 @@ export default function Employees() {
 
                 {/* FILTERS */}
                 <form className="mb-4 flex gap-2" onSubmit={handleFilter}>
-                    <input
+                    <Input
                         type="text"
                         placeholder="Search employee name or email..."
                         value={search}
@@ -104,18 +116,11 @@ export default function Employees() {
                         className="flex-1 rounded border p-2"
                     />
 
-                    <button
-                        type="submit"
-                        className="rounded-2xl bg-blue-500 px-4 py-2 text-white"
-                    >
-                        Filter
-                    </button>
-
-                    <Link
-                        href={'/employees/create'}
-                        className='className="rounded hover:bg-green-600" rounded-2xl bg-green-500 px-4 py-2 text-white'
-                    >
-                        Register
+                    <Link href={'/employees/create'}>
+                        <Button>
+                            <FolderSymlink />
+                            Add Employee
+                        </Button>
                     </Link>
                 </form>
 
@@ -124,59 +129,50 @@ export default function Employees() {
                     <p>Loading...</p>
                 ) : (
                     <>
-                        <div className="w-full overflow-x-auto rounded-xl border border-gray-200 shadow-sm dark:border-gray-700">
-                            <table className="w-full min-w-[900px] text-left text-sm">
-                                <thead className="sticky top-0 z-10 bg-gray-50 dark:bg-gray-800">
-                                    <tr>
-                                        <th className="px-4 py-3 font-semibold text-gray-600 uppercase dark:text-gray-300">
-                                            Id
-                                        </th>
-                                        <th className="px-4 py-3 font-semibold text-gray-600 uppercase dark:text-gray-300">
-                                            Name
-                                        </th>
-                                        <th className="px-4 py-3 font-semibold text-gray-600 uppercase dark:text-gray-300">
-                                            Position
-                                        </th>
-                                        <th className="px-4 py-3 font-semibold text-gray-600 uppercase dark:text-gray-300">
-                                            Status
-                                        </th>
-                                        <th className="px-4 py-3 font-semibold text-gray-600 uppercase dark:text-gray-300">
-                                            Contact No
-                                        </th>
-                                        <th className="px-4 py-3 font-semibold text-gray-600 uppercase dark:text-gray-300">
-                                            Action
-                                        </th>
-                                    </tr>
-                                </thead>
+                        <div className="w-full overflow-x-auto rounded-xl border shadow-sm">
+                            <Table>
+                                <TableCaption>List of Employees</TableCaption>
 
-                                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Id</TableHead>
+                                        <TableHead>Name</TableHead>
+                                        <TableHead>Position</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead>Contact No</TableHead>
+                                        <TableHead>Action</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+
+                                <TableBody>
                                     {employees.data.length === 0 ? (
-                                        <tr>
-                                            <td
-                                                colSpan={5}
-                                                className="py-6 text-center text-gray-500 dark:text-gray-400"
+                                        <TableRow>
+                                            <TableCell
+                                                colSpan={6}
+                                                className="py-6 text-center text-gray-500"
                                             >
                                                 No employees found
-                                            </td>
-                                        </tr>
+                                            </TableCell>
+                                        </TableRow>
                                     ) : (
                                         employees.data.map((emp) => (
-                                            <tr
+                                            <TableRow
                                                 key={emp.id}
                                                 className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
                                             >
-                                                <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
+                                                <TableCell className="font-medium text-gray-900 dark:text-gray-100">
                                                     {emp.id}
-                                                </td>
-                                                <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
-                                                    {emp.name}{' '}
-                                                </td>
+                                                </TableCell>
 
-                                                <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
+                                                <TableCell className="font-medium text-gray-900 dark:text-gray-100">
+                                                    {emp.name}
+                                                </TableCell>
+
+                                                <TableCell className="text-gray-700 dark:text-gray-300">
                                                     {emp.designation}
-                                                </td>
+                                                </TableCell>
 
-                                                <td className="px-4 py-3">
+                                                <TableCell>
                                                     <span
                                                         className={`rounded-lg px-2 py-1 text-xs font-semibold ${
                                                             emp.status ===
@@ -187,13 +183,13 @@ export default function Employees() {
                                                     >
                                                         {emp.status}
                                                     </span>
-                                                </td>
+                                                </TableCell>
 
-                                                <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
+                                                <TableCell className="text-gray-700 dark:text-gray-300">
                                                     {emp.contact_no}
-                                                </td>
+                                                </TableCell>
 
-                                                <td className="px-4 py-3">
+                                                <TableCell>
                                                     <button
                                                         onClick={() =>
                                                             openModal(emp)
@@ -202,12 +198,12 @@ export default function Employees() {
                                                     >
                                                         View
                                                     </button>
-                                                </td>
-                                            </tr>
+                                                </TableCell>
+                                            </TableRow>
                                         ))
                                     )}
-                                </tbody>
-                            </table>
+                                </TableBody>
+                            </Table>
                         </div>
 
                         {/* MODAL */}

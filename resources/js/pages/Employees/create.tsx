@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
@@ -324,13 +326,9 @@ export default function EmployeeCreate() {
                     </div>
 
                     <div className="col-span-2 mt-4 flex justify-end">
-                        <button
-                            type="submit"
-                            disabled={processing}
-                            className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:opacity-50"
-                        >
-                            Register
-                        </button>
+                        <Button type="submit" disabled={processing}>
+                            {processing && <Spinner />}Register
+                        </Button>
                     </div>
                 </form>
             </div>

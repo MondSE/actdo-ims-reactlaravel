@@ -1,7 +1,27 @@
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
+import { TicketPlus } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -105,34 +125,43 @@ export default function Licenses() {
 
                 {/* Filter Form */}
                 <form className="mb-4 flex gap-2" onSubmit={handleFilter}>
-                    <input
+                    <Input
                         type="text"
                         placeholder="Search name, plate, violation..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         className="flex-1 rounded border p-2"
                     />
-                    <select
+                    <Select
                         value={ticketType}
-                        onChange={(e) =>
+                        onValueChange={(value) =>
                             setTicketType(
-                                e.target.value as
+                                value.toLowerCase() as
                                     | 'towing'
                                     | 'ticket'
                                     | 'impounded'
                                     | '',
                             )
                         }
-                        className="rounded border bg-accent p-2"
                     >
-                        <option value="">All Types</option>
-                        <option value="towing">Towing</option>
-                        <option value="ticket">Ticket</option>
-                        <option value="impounded">Impounded</option>
-                    </select>
-                    <button type="submit" className="rounded bg-blue-500 p-2">
-                        Filter
-                    </button>
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select a Ticket" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectItem value=" ">All Types</SelectItem>
+                                <SelectItem value="towing">Towing</SelectItem>
+                                <SelectItem value="ticket">Ticket</SelectItem>
+                                <SelectItem value="impounded">
+                                    Impounded
+                                </SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                    <Button>
+                        <TicketPlus />
+                        Add Ticket
+                    </Button>
                 </form>
 
                 {/* Table */}
@@ -140,64 +169,46 @@ export default function Licenses() {
                     <p>Loading...</p>
                 ) : (
                     <>
-                        <div className="w-full overflow-x-auto rounded-xl border border-gray-200 shadow-sm dark:border-gray-700">
-                            <table className="w-full min-w-[900px] text-left text-sm">
-                                <thead className="sticky top-0 z-10 bg-gray-50 dark:bg-gray-800">
-                                    <tr>
-                                        <th className="px-4 py-3 font-semibold tracking-wide text-gray-600 uppercase dark:text-gray-300">
-                                            Ticket No
-                                        </th>
-                                        <th className="px-4 py-3 font-semibold tracking-wide text-gray-600 uppercase dark:text-gray-300">
-                                            Ticket Type
-                                        </th>
-                                        <th className="px-4 py-3 font-semibold tracking-wide text-gray-600 uppercase dark:text-gray-300">
-                                            Name
-                                        </th>
-                                        <th className="px-4 py-3 font-semibold tracking-wide text-gray-600 uppercase dark:text-gray-300">
-                                            License No
-                                        </th>
-                                        <th className="px-4 py-3 font-semibold tracking-wide text-gray-600 uppercase dark:text-gray-300">
-                                            Plate
-                                        </th>
+                        <div className="w-full overflow-x-auto rounded-xl border shadow-sm">
+                            <Table>
+                                <TableCaption>
+                                    List of License Records
+                                </TableCaption>
 
-                                        <th className="px-4 py-3 font-semibold tracking-wide text-gray-600 uppercase dark:text-gray-300">
-                                            Violation
-                                        </th>
-                                        <th className="px-4 py-3 font-semibold tracking-wide text-gray-600 uppercase dark:text-gray-300">
-                                            Date
-                                        </th>
-                                        <th className="px-4 py-3 font-semibold tracking-wide text-gray-600 uppercase dark:text-gray-300">
-                                            Office
-                                        </th>
-                                        <th className="px-4 py-3 font-semibold tracking-wide text-gray-600 uppercase dark:text-gray-300">
-                                            Officer
-                                        </th>
-                                        <th className="px-4 py-3 font-semibold tracking-wide text-gray-600 uppercase dark:text-gray-300">
-                                            status
-                                        </th>
-                                    </tr>
-                                </thead>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Ticket No</TableHead>
+                                        <TableHead>Ticket Type</TableHead>
+                                        <TableHead>Name</TableHead>
+                                        <TableHead>License No</TableHead>
+                                        <TableHead>Plate</TableHead>
+                                        <TableHead>Violation</TableHead>
+                                        <TableHead>Date</TableHead>
+                                        <TableHead>Office</TableHead>
+                                        <TableHead>Officer</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead>Action</TableHead>
+                                    </TableRow>
+                                </TableHeader>
 
-                                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                                <TableBody>
                                     {licenses.data.length === 0 ? (
-                                        <tr>
-                                            <td
-                                                colSpan={6}
-                                                className="py-6 text-center text-gray-500 dark:text-gray-400"
+                                        <TableRow>
+                                            <TableCell
+                                                colSpan={11}
+                                                className="py-6 text-center text-gray-500"
                                             >
                                                 No records found
-                                            </td>
-                                        </tr>
+                                            </TableCell>
+                                        </TableRow>
                                     ) : (
                                         licenses.data.map((license) => (
-                                            <tr
-                                                key={license.id}
-                                                className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
-                                            >
-                                                <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
+                                            <TableRow key={license.id}>
+                                                <TableCell className="font-medium">
                                                     {license.ticket_no}
-                                                </td>
-                                                <td className="px-4 py-3 capitalize">
+                                                </TableCell>
+
+                                                <TableCell>
                                                     <span
                                                         className={`rounded-lg px-2 py-1 text-xs font-semibold ${
                                                             license.ticket_types ===
@@ -211,50 +222,61 @@ export default function Licenses() {
                                                     >
                                                         {license.ticket_types}
                                                     </span>
-                                                </td>
-                                                <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
+                                                </TableCell>
+
+                                                <TableCell className="font-medium">
                                                     {license.full_name}
-                                                </td>
-                                                <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
+                                                </TableCell>
+                                                <TableCell className="font-medium">
                                                     {license.driver_license_no}
-                                                </td>
-
-                                                <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
+                                                </TableCell>
+                                                <TableCell>
                                                     {license.plate_no}
-                                                </td>
-
-                                                <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
+                                                </TableCell>
+                                                <TableCell>
                                                     {license.violation}
-                                                </td>
-
-                                                <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
+                                                </TableCell>
+                                                <TableCell>
                                                     {formatDate(
                                                         license.date_apprehend,
                                                     )}
-                                                </td>
-                                                <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
+                                                </TableCell>
+                                                <TableCell>
                                                     {license.office}
-                                                </td>
-                                                <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
+                                                </TableCell>
+                                                <TableCell>
                                                     {license.officer_name}
-                                                </td>
+                                                </TableCell>
 
-                                                {/* ACTION BUTTONS */}
-                                                <td className="flex gap-2 px-4 py-3">
-                                                    {/* If PENDING → EDIT BUTTON */}
+                                                <TableCell>
+                                                    {license.transaction ===
+                                                    'Pending' ? (
+                                                        <span className="font-semibold text-yellow-600">
+                                                            {
+                                                                license.transaction
+                                                            }
+                                                        </span>
+                                                    ) : (
+                                                        <span className="font-semibold text-green-600">
+                                                            {
+                                                                license.transaction
+                                                            }
+                                                        </span>
+                                                    )}
+                                                </TableCell>
+
+                                                <TableCell className="flex gap-2">
                                                     {license.transaction ===
                                                         'Pending' && (
                                                         <button
                                                             onClick={() =>
                                                                 (window.location.href = `/licenses/${license.id}/edit`)
                                                             }
-                                                            className="rounded-lg bg-yellow-500 px-3 py-1 text-sm text-white transition hover:bg-yellow-600"
+                                                            className="rounded-lg bg-yellow-500 px-3 py-1 text-sm text-white hover:bg-yellow-600"
                                                         >
                                                             Edit
                                                         </button>
                                                     )}
-
-                                                    {/* If PAID or SURRENDER → VIEW BUTTON */}
                                                     {(license.transaction ===
                                                         'Paid' ||
                                                         license.transaction ===
@@ -265,17 +287,17 @@ export default function Licenses() {
                                                                     license,
                                                                 )
                                                             }
-                                                            className="rounded-lg bg-blue-500 px-3 py-1 text-sm text-white transition hover:bg-blue-600"
+                                                            className="rounded-lg bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600"
                                                         >
                                                             View
                                                         </button>
                                                     )}
-                                                </td>
-                                            </tr>
+                                                </TableCell>
+                                            </TableRow>
                                         ))
                                     )}
-                                </tbody>
-                            </table>
+                                </TableBody>
+                            </Table>
                         </div>
 
                         {/* PopUp Modal */}
