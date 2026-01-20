@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Bell } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface Notification {
     id: number;
@@ -15,18 +15,15 @@ export default function NotificationBell() {
     const [list, setList] = useState<Notification[]>([]);
     const [open, setOpen] = useState(false);
 
-    // ✅ stable ref to avoid calling setState in effect body
-    const initializedRef = useRef(false);
-
     const fetchNotifications = useCallback(async () => {
         try {
-            const resCount = await axios.get('/notifications/unread-count');
-            setCount(resCount.data.count ?? 0);
+            const countRes = await axios.get('/notifications/unread-count');
+            setCount(countRes.data.count ?? 0);
 
-            const resList = await axios.get('/notifications/list');
-            setList(resList.data ?? []);
+            const listRes = await axios.get('/notifications/list');
+            setList(listRes.data ?? []);
         } catch (err) {
-            console.error('❌ Notification fetch error:', err);
+            console.error('Notification fetch failed:', err);
         }
     }, []);
 
@@ -48,19 +45,22 @@ export default function NotificationBell() {
         }
     };
 
-    // ✅ ESLint-safe effect
+    // ✅ ESLint-approved effect
     useEffect(() => {
+        // ⏱️ initial fetch via external async system
+        const timeout = setTimeout(() => {
+            fetchNotifications();
+        }, 0);
+
+        // 🔁 polling subscription
         const interval = setInterval(() => {
             fetchNotifications();
         }, 30000);
 
-        // ✅ initial fetch happens via interval callback once
-        if (!initializedRef.current) {
-            initializedRef.current = true;
-            fetchNotifications();
-        }
-
-        return () => clearInterval(interval);
+        return () => {
+            clearTimeout(timeout);
+            clearInterval(interval);
+        };
     }, [fetchNotifications]);
 
     return (
