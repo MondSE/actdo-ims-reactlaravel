@@ -50,16 +50,19 @@ export default function Accidents() {
         current_page: 1,
         last_page: 1,
     });
+
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(false);
+
     const [selectedAccident, setSelectedAccident] = useState<Accident | null>(
         null,
     );
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    // ✅ Safe local date formatter
     const formatDate = (dateString: string) => {
         if (!dateString) return '';
-        return new Date(dateString).toISOString().split('T')[0];
+        return new Date(dateString).toLocaleDateString();
     };
 
     const openViewModal = (accident: Accident) => {
@@ -72,6 +75,7 @@ export default function Accidents() {
         setIsModalOpen(false);
     };
 
+    // ✅ useCallback with proper dependency
     const fetchAccidents = useCallback(
         async (page = 1) => {
             setLoading(true);
@@ -95,9 +99,10 @@ export default function Accidents() {
         [search],
     );
 
+    // ✅ ESLint / CI safe
     useEffect(() => {
         fetchAccidents();
-    }, [search]);
+    }, [fetchAccidents]);
 
     const handleFilter = (e: React.FormEvent) => {
         e.preventDefault();
@@ -120,7 +125,7 @@ export default function Accidents() {
                     />
                     <button
                         type="submit"
-                        className="rounded bg-blue-500 p-2 text-white"
+                        className="rounded bg-blue-500 p-2 text-white hover:bg-blue-600"
                     >
                         Filter
                     </button>
@@ -214,13 +219,14 @@ export default function Accidents() {
                 {isModalOpen && selectedAccident && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center">
                         <div
-                            className="bg-opacity-50 absolute inset-0 bg-black backdrop-blur-sm"
+                            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
                             onClick={closeViewModal}
                         />
                         <div className="relative w-full max-w-lg rounded-xl bg-white p-6 shadow-2xl dark:bg-gray-900">
                             <h2 className="mb-4 text-xl font-semibold text-gray-800 dark:text-gray-100">
                                 Accident Details
                             </h2>
+
                             <div className="space-y-2 text-gray-700 dark:text-gray-300">
                                 <p>
                                     <strong>Code:</strong>{' '}
@@ -255,6 +261,7 @@ export default function Accidents() {
                                     {selectedAccident.involved}
                                 </p>
                             </div>
+
                             <div className="mt-6 flex justify-end">
                                 <button
                                     onClick={closeViewModal}

@@ -1,12 +1,13 @@
 import axios from 'axios';
 import { Bell } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface Notification {
     id: number;
     title: string;
     message: string;
     status: number;
+    created_at: string;
 }
 
 export default function NotificationBell() {
@@ -14,46 +15,49 @@ export default function NotificationBell() {
     const [list, setList] = useState<Notification[]>([]);
     const [open, setOpen] = useState(false);
 
-    const fetchNotifications = async () => {
+    const fetchNotifications = useCallback(async () => {
         try {
             const resCount = await axios.get('/notifications/unread-count');
-            console.log('Unread Count:', resCount.data);
-            setCount(resCount.data.count);
+            setCount(resCount.data.count ?? 0);
 
             const resList = await axios.get('/notifications/list');
-            console.log('Notification List:', resList.data);
-            setList(resList.data);
+            setList(resList.data ?? []);
         } catch (err) {
             console.error('❌ Error fetching notifications:', err);
         }
-    };
+    }, []);
 
-    const markAsRead = async (id: number) => {
+    const markAsRead = useCallback(
+        async (id: number) => {
+            try {
+                await axios.post(`/notifications/read/${id}`);
+                fetchNotifications();
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        [fetchNotifications],
+    );
+
+    const markAllAsRead = useCallback(async () => {
         try {
-            await axios.post(`/notifications/read/${id}`);
+            await axios.post('/notifications/mark-all-read');
             fetchNotifications();
         } catch (err) {
             console.error(err);
         }
-    };
-
-    const markAllAsRead = async () => {
-        try {
-            await axios.post(`/notifications/mark-all-read`);
-            fetchNotifications();
-        } catch (err) {
-            console.error(err);
-        }
-    };
+    }, [fetchNotifications]);
 
     useEffect(() => {
         fetchNotifications();
-    }, []);
+        const interval = setInterval(fetchNotifications, 30000);
+        return () => clearInterval(interval);
+    }, [fetchNotifications]);
 
     return (
         <div className="relative ml-auto">
             <button
-                onClick={() => setOpen(!open)}
+                onClick={() => setOpen((prev) => !prev)}
                 className="relative p-2 text-gray-700 dark:text-gray-200"
             >
                 <Bell />
@@ -82,19 +86,32 @@ export default function NotificationBell() {
                                 No notifications
                             </li>
                         )}
+
                         {list.map((n) => (
                             <li
                                 key={n.id}
                                 className={`p-2 hover:bg-gray-100 dark:hover:bg-gray-800 ${
                                     n.status === 1
                                         ? 'font-semibold'
-                                        : 'font-normal text-gray-500'
+                                        : 'text-gray-500'
                                 }`}
                             >
-                                <div>{n.title}</div>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <div className="font-medium">{n.title}</div>
+                                    <div>
+                                        <span className="text-right text-xs">
+                                            {' '}
+                                            {new Date(
+                                                n.created_at,
+                                            ).toLocaleString()}
+                                        </span>
+                                    </div>
+                                </div>
+
                                 {n.message && (
                                     <div className="text-xs">{n.message}</div>
                                 )}
+
                                 {n.status === 1 && (
                                     <button
                                         onClick={() => markAsRead(n.id)}

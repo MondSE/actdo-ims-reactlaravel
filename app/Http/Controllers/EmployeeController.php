@@ -100,7 +100,7 @@ class EmployeeController extends Controller
         foreach ($users as $user) {
             Notification::create([
                 'user_id' => $user->id,
-                'title' => 'New Employee Registered',
+                'title' => 'New Employee',
                 'message' => "{$validated['name']} has been added to {$validated['designation']}.". Auth::user()->name,
                 'status' => 1,// unread
             ]);

@@ -48,14 +48,16 @@ export default function Employees() {
 
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(false);
+
     const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
         null,
     );
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const formatDate = (d: string) => {
-        if (!d) return '';
-        return new Date(d).toISOString().split('T')[0];
+    // ✅ Safe date formatter (local time)
+    const formatDate = (date: string) => {
+        if (!date) return '';
+        return new Date(date).toLocaleDateString();
     };
 
     const openModal = (employee: Employee) => {
@@ -68,6 +70,7 @@ export default function Employees() {
         setIsModalOpen(false);
     };
 
+    // ✅ Proper useCallback
     const fetchEmployees = useCallback(
         async (page = 1) => {
             setLoading(true);
@@ -92,9 +95,10 @@ export default function Employees() {
         [search],
     );
 
+    // ✅ ESLint-safe dependency
     useEffect(() => {
         fetchEmployees();
-    }, [search]);
+    }, [fetchEmployees]);
 
     const handleFilter = (e: React.FormEvent) => {
         e.preventDefault();
@@ -106,19 +110,19 @@ export default function Employees() {
             <div className="p-4">
                 <Head title="Employee Records" />
 
-                {/* FILTERS */}
+                {/* FILTER */}
                 <form className="mb-4 flex gap-2" onSubmit={handleFilter}>
                     <Input
                         type="text"
                         placeholder="Search employee name or email..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="flex-1 rounded border p-2"
+                        className="flex-1"
                     />
 
-                    <Link href={'/employees/create'}>
+                    <Link href="/employees/create">
                         <Button>
-                            <FolderSymlink />
+                            <FolderSymlink className="mr-2 h-4 w-4" />
                             Add Employee
                         </Button>
                     </Link>
@@ -135,7 +139,7 @@ export default function Employees() {
 
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>Id</TableHead>
+                                        <TableHead>ID</TableHead>
                                         <TableHead>Name</TableHead>
                                         <TableHead>Position</TableHead>
                                         <TableHead>Status</TableHead>
@@ -160,15 +164,15 @@ export default function Employees() {
                                                 key={emp.id}
                                                 className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
                                             >
-                                                <TableCell className="font-medium text-gray-900 dark:text-gray-100">
+                                                <TableCell className="font-medium">
                                                     {emp.id}
                                                 </TableCell>
 
-                                                <TableCell className="font-medium text-gray-900 dark:text-gray-100">
+                                                <TableCell className="font-medium">
                                                     {emp.name}
                                                 </TableCell>
 
-                                                <TableCell className="text-gray-700 dark:text-gray-300">
+                                                <TableCell>
                                                     {emp.designation}
                                                 </TableCell>
 
@@ -185,7 +189,7 @@ export default function Employees() {
                                                     </span>
                                                 </TableCell>
 
-                                                <TableCell className="text-gray-700 dark:text-gray-300">
+                                                <TableCell>
                                                     {emp.contact_no}
                                                 </TableCell>
 
@@ -210,36 +214,32 @@ export default function Employees() {
                         {isModalOpen && selectedEmployee && (
                             <div className="fixed inset-0 z-50 flex items-center justify-center">
                                 <div
-                                    className="bg-opacity-50 absolute inset-0 bg-black backdrop-blur-sm"
+                                    className="absolute inset-0 bg-black/50 backdrop-blur-sm"
                                     onClick={closeModal}
                                 />
 
                                 <div className="relative w-full max-w-lg rounded-xl bg-white p-6 shadow-2xl dark:bg-gray-900">
-                                    <h2 className="mb-4 text-xl font-semibold text-gray-800 dark:text-gray-100">
+                                    <h2 className="mb-4 text-xl font-semibold">
                                         Employee Details
                                     </h2>
 
-                                    <div className="space-y-2 text-gray-700 dark:text-gray-300">
+                                    <div className="space-y-2">
                                         <p>
                                             <strong>Name:</strong>{' '}
-                                            {selectedEmployee.name}{' '}
+                                            {selectedEmployee.name}
                                         </p>
-
                                         <p>
                                             <strong>Email:</strong>{' '}
                                             {selectedEmployee.email}
                                         </p>
-
                                         <p>
                                             <strong>Position:</strong>{' '}
                                             {selectedEmployee.designation}
                                         </p>
-
                                         <p>
                                             <strong>Status:</strong>{' '}
                                             {selectedEmployee.status}
                                         </p>
-
                                         <p>
                                             <strong>Date Added:</strong>{' '}
                                             {formatDate(
