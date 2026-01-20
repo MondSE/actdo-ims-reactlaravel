@@ -8,40 +8,35 @@ use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
-    // Fetch unread count
-    public function unreadCount()
-    {
-        $count = Notification::where('user_id', Auth::id())
-                             ->where('status', 1)
-                             ->count();
+  public function getNotifications()
+{
+    $notifications = Notification::where('user_id', auth()->id())
+        ->orderBy('created_at', 'desc')
+        ->get();
 
-        return response()->json(['count' => $count]);
-    }
+    return response()->json($notifications);
+}
 
-    // Fetch latest notifications
-    public function getNotifications()
-    {
-        $notifications = Notification::where('user_id', Auth::id())
-                                     ->orderBy('created_at', 'desc')
-                                     ->take(10)
-                                     ->get();
+public function unreadCount()
+{
+    $count = Notification::where('user_id', auth()->id())
+        ->where('status', 1)
+        ->count();
 
-        return response()->json($notifications);
-    }
+    return response()->json(['count' => $count]);
+}
 
-    // Mark a notification as read
-    public function markAsRead($id)
-    {
-        $notif = Notification::where('id', $id)
-                             ->where('user_id', Auth::id())
-                             ->first();
+public function markAsRead($id)
+{
+    $notification = Notification::where('user_id', auth()->id())
+        ->where('id', $id)
+        ->firstOrFail();
 
-        if ($notif) {
-            $notif->update(['status' => 0]);
-        }
+    $notification->update(['status' => 0]);
 
-        return response()->json(['success' => true]);
-    }
+    return response()->json(['success' => true]);
+}
+
 
     // Optional: mark all as read
     public function markAllAsRead()

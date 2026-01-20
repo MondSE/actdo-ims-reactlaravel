@@ -7,6 +7,7 @@ use App\Models\Employee;
 use Inertia\Inertia;
 use App\Models\User;
 use App\Models\Notification;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeeController extends Controller
 {
@@ -93,14 +94,14 @@ class EmployeeController extends Controller
         // create employee
         $employee = Employee::create($validated);
 
-        // auto notification for all users
-        $users = User::all();
+        // Get all users except the current user
+        $users = User::where('id', '!=', Auth::id())->get();
 
         foreach ($users as $user) {
             Notification::create([
                 'user_id' => $user->id,
                 'title' => 'New Employee Registered',
-                'message' => "{$validated['name']} has been added to {$validated['designation']}.",
+                'message' => "{$validated['name']} has been added to {$validated['designation']}.". Auth::user()->name,
                 'status' => 1,// unread
             ]);
         }
