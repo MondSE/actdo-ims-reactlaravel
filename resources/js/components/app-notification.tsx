@@ -1,19 +1,22 @@
 import axios from 'axios';
 import { Bell } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface Notification {
     id: number;
     title: string;
-    message: string;
+    message?: string;
     status: number;
-    created_at: string;
+    created_at?: string;
 }
 
 export default function NotificationBell() {
     const [count, setCount] = useState(0);
     const [list, setList] = useState<Notification[]>([]);
     const [open, setOpen] = useState(false);
+
+    // ✅ stable ref to avoid calling setState in effect body
+    const initializedRef = useRef(false);
 
     const fetchNotifications = useCallback(async () => {
         try {
@@ -23,44 +26,50 @@ export default function NotificationBell() {
             const resList = await axios.get('/notifications/list');
             setList(resList.data ?? []);
         } catch (err) {
-            console.error('❌ Error fetching notifications:', err);
+            console.error('❌ Notification fetch error:', err);
         }
     }, []);
 
-    const markAsRead = useCallback(
-        async (id: number) => {
-            try {
-                await axios.post(`/notifications/read/${id}`);
-                fetchNotifications();
-            } catch (err) {
-                console.error(err);
-            }
-        },
-        [fetchNotifications],
-    );
+    const markAsRead = async (id: number) => {
+        try {
+            await axios.post(`/notifications/read/${id}`);
+            fetchNotifications();
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
-    const markAllAsRead = useCallback(async () => {
+    const markAllAsRead = async () => {
         try {
             await axios.post('/notifications/mark-all-read');
             fetchNotifications();
         } catch (err) {
             console.error(err);
         }
-    }, [fetchNotifications]);
+    };
 
+    // ✅ ESLint-safe effect
     useEffect(() => {
-        fetchNotifications();
-        const interval = setInterval(fetchNotifications, 30000);
+        const interval = setInterval(() => {
+            fetchNotifications();
+        }, 30000);
+
+        // ✅ initial fetch happens via interval callback once
+        if (!initializedRef.current) {
+            initializedRef.current = true;
+            fetchNotifications();
+        }
+
         return () => clearInterval(interval);
     }, [fetchNotifications]);
 
     return (
         <div className="relative ml-auto">
             <button
-                onClick={() => setOpen((prev) => !prev)}
+                onClick={() => setOpen((o) => !o)}
                 className="relative p-2 text-gray-700 dark:text-gray-200"
             >
-                <Bell />
+                <Bell className="h-5 w-5" />
                 {count > 0 && (
                     <span className="absolute -top-1 -right-1 rounded-full bg-red-500 px-1 text-xs text-white">
                         {count}
@@ -69,7 +78,7 @@ export default function NotificationBell() {
             </button>
 
             {open && (
-                <div className="absolute left-0 z-50 mt-2 w-80 rounded-lg border bg-white shadow-lg dark:bg-black">
+                <div className="absolute right-0 z-50 mt-2 w-80 rounded-lg border bg-white shadow-lg dark:bg-black">
                     <div className="flex justify-between border-b p-2">
                         <span className="font-semibold">Notifications</span>
                         <button
@@ -96,16 +105,15 @@ export default function NotificationBell() {
                                         : 'text-gray-500'
                                 }`}
                             >
-                                <div className="grid grid-cols-2 gap-2">
-                                    <div className="font-medium">{n.title}</div>
-                                    <div>
-                                        <span className="text-right text-xs">
-                                            {' '}
+                                <div className="flex justify-between">
+                                    <span>{n.title}</span>
+                                    {n.created_at && (
+                                        <span className="text-xs text-gray-400">
                                             {new Date(
                                                 n.created_at,
-                                            ).toLocaleString()}
+                                            ).toLocaleDateString()}
                                         </span>
-                                    </div>
+                                    )}
                                 </div>
 
                                 {n.message && (
@@ -115,7 +123,7 @@ export default function NotificationBell() {
                                 {n.status === 1 && (
                                     <button
                                         onClick={() => markAsRead(n.id)}
-                                        className="text-xs text-blue-500"
+                                        className="mt-1 text-xs text-blue-500"
                                     >
                                         Mark as read
                                     </button>
