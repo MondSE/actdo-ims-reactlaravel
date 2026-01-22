@@ -65,7 +65,12 @@ export default function LicenseCreate() {
         fetchActiveOfficers();
     }, []);
 
-    const handleChange = (field: string, value: any) => {
+    type FormFields = keyof typeof form;
+
+    const handleChange = <K extends FormFields>(
+        field: K,
+        value: (typeof form)[K],
+    ) => {
         setForm((prev) => ({ ...prev, [field]: value }));
     };
 
