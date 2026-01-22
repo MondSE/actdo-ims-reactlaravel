@@ -19,14 +19,14 @@ import {
 } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import axios from 'axios';
-import { TicketPlus } from 'lucide-react';
+import { PhilippinePeso, TicketPlus } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Licenses Record',
+        title: 'Ticket Record',
         href: '/licenses',
     },
 ];
@@ -37,7 +37,7 @@ interface License {
     full_name: string;
     driver_license_no: string;
     plate_no: string;
-    ticket_types: 'towing' | 'ticket' | 'impounded';
+    ticket_types: 'Towing Ticket' | 'Traffic Ticket' | 'Impounding Ticket';
     violation: string;
     date_apprehend: string;
     office: string;
@@ -64,7 +64,7 @@ export default function Licenses() {
 
     const [search, setSearch] = useState('');
     const [ticketType, setTicketType] = useState<
-        'towing' | 'ticket' | 'impounded' | ''
+        'Towing Ticket' | 'Traffic Ticket' | 'Impounding Ticket' | ''
     >('');
     const [loading, setLoading] = useState(false);
 
@@ -131,10 +131,13 @@ export default function Licenses() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="p-4">
-                <Head title="Licenses" />
+                <Head title="Tickets" />
 
                 {/* FILTER */}
-                <form className="mb-4 flex gap-2" onSubmit={handleFilter}>
+                <form
+                    className="mb-4 flex flex-wrap gap-2"
+                    onSubmit={handleFilter}
+                >
                     <Input
                         type="text"
                         placeholder="Search name, plate, violation..."
@@ -147,7 +150,11 @@ export default function Licenses() {
                         value={ticketType}
                         onValueChange={(value) =>
                             setTicketType(
-                                value as 'towing' | 'ticket' | 'impounded' | '',
+                                value as
+                                    | 'Towing Ticket'
+                                    | 'Traffic Ticket'
+                                    | 'Impounding Ticket'
+                                    | '',
                             )
                         }
                     >
@@ -157,20 +164,33 @@ export default function Licenses() {
 
                         <SelectContent>
                             <SelectGroup>
-                                <SelectItem value="">All Types</SelectItem>
-                                <SelectItem value="towing">Towing</SelectItem>
-                                <SelectItem value="ticket">Ticket</SelectItem>
-                                <SelectItem value="impounded">
-                                    Impounded
+                                <SelectItem value=" ">All Types</SelectItem>
+                                <SelectItem value="Towing Ticket">
+                                    Towing Ticket
+                                </SelectItem>
+                                <SelectItem value="Traffic Ticket">
+                                    Traffic Ticket
+                                </SelectItem>
+                                <SelectItem value="Impounding Ticket">
+                                    Impounding Ticket
                                 </SelectItem>
                             </SelectGroup>
                         </SelectContent>
                     </Select>
 
-                    <Button type="button">
-                        <TicketPlus className="mr-2 h-4 w-4" />
-                        Add Ticket
-                    </Button>
+                    <Link href="/licenses/payment">
+                        <Button type="button">
+                            <PhilippinePeso />
+                            Payment
+                        </Button>
+                    </Link>
+
+                    <Link href="/licenses/create">
+                        <Button type="button">
+                            <TicketPlus className="mr-2 h-4 w-4" />
+                            Add Ticket
+                        </Button>
+                    </Link>
                 </form>
 
                 {/* TABLE */}
@@ -221,10 +241,10 @@ export default function Licenses() {
                                                     <span
                                                         className={`rounded-lg px-2 py-1 text-xs font-semibold ${
                                                             license.ticket_types ===
-                                                            'towing'
+                                                            'Towing Ticket'
                                                                 ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
                                                                 : license.ticket_types ===
-                                                                    'ticket'
+                                                                    'Traffic Ticket'
                                                                   ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
                                                                   : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
                                                         }`}

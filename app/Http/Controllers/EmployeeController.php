@@ -66,6 +66,16 @@ class EmployeeController extends Controller
         return response()->json($employees);
     }
 
+    public function apiActiveOfficers()
+{
+    $employees = Employee::where('status', 'Active')
+                         ->orderBy('name', 'asc')
+                         ->get(); // <- no pagination, get all active officers
+
+    return response()->json($employees);
+}
+    
+
     // Show Registration From
     public function create()
     {

@@ -31,9 +31,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // License routes
 // Inertia page
-Route::get('/licenses', [LicenseController::class, 'index'])
-     ->middleware(['auth', 'verified'])
-     ->name('licenses');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/licenses', [LicenseController::class, 'index'])->name('licenses.index');
+    Route::get('/licenses/create', [LicenseController::class, 'create'])->name('licenses.create');
+    Route::post('/licenses', [LicenseController::class, 'store'])->name('licenses.store');
+});
 
 // JSON API route
 Route::get('/api/licenses', [LicenseController::class, 'apiIndex'])
@@ -51,6 +53,8 @@ Route::get('/employees',[EmployeeController::class, 'index'])
 // JSON API route
 Route::get('/api/employees', [EmployeeController::class, 'apiIndex'])
     ->middleware(['auth', 'verified']);
+    
+Route::get('/api/employees/active-officers', [EmployeeController::class, 'apiActiveOfficers']);
 
 // Accident routes
 Route::middleware(['auth', 'verified'])->group(function () {

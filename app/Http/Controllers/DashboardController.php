@@ -18,12 +18,12 @@ class DashboardController extends Controller
     {
         // License counts by type
         $licenseCounts = [
-            'towing' => License::where('Ticket_Types', 'towing')->count(),
-            'ticket' => License::where('Ticket_Types', 'ticket')->count(),
-            'impounded' => License::where('Ticket_Types', 'impounded')->count(),
-            'inventory_towing' => License::where('Ticket_Types', 'towing')->where('Transaction', 'Pending')->count(),
-            'inventory_ticket' => License::where('Ticket_Types', 'ticket')->where('Transaction', 'Pending')->count(),
-            'inventory_impounded' => License::where('Ticket_Types', 'impounded')->where('Transaction', 'Pending')->count(),
+            'towing' => License::where('ticket_types', 'Towing Ticket')->count(),
+            'ticket' => License::where('ticket_types', 'Traffic Ticket')->count(),
+            'impounded' => License::where('ticket_types', 'Impounded Ticket')->count(),
+            'inventory_towing' => License::where('ticket_types', 'Towing Ticket')->where('Transaction', 'Pending')->count(),
+            'inventory_ticket' => License::where('ticket_types', 'Traffic Ticket')->where('Transaction', 'Pending')->count(),
+            'inventory_impounded' => License::where('ticket_types', 'Impounded Ticket')->where('Transaction', 'Pending')->count(),
         ];
 
         $employeeCount = [
