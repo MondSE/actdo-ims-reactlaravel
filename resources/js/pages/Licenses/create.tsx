@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -87,7 +87,7 @@ export default function LicenseCreate() {
         });
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (
@@ -129,8 +129,12 @@ export default function LicenseCreate() {
                 remarks: '',
                 violation: [],
             });
-        } catch (err: any) {
-            console.error(err.response?.data);
+        } catch (err: unknown) {
+            if (err instanceof AxiosError) {
+                console.error(err.response?.data);
+            } else {
+                console.error(err);
+            }
             alert('Failed to create license.');
         } finally {
             setSubmitting(false);
