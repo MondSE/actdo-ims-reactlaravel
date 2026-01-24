@@ -55,6 +55,15 @@ interface LicenseResponse {
     last_page: number;
 }
 
+interface PaymentForm {
+    ticket_no: string;
+    amount_payment: number | '';
+    discount_amount_payment: number | '';
+    date_transaction: string;
+    official_receipt_no: string;
+    responsible_name: string | '';
+}
+
 export default function Licenses() {
     const [licenses, setLicenses] = useState<LicenseResponse>({
         data: [],
@@ -120,12 +129,66 @@ export default function Licenses() {
 
     // ✅ ESLint-safe effect
     useEffect(() => {
-        fetchLicenses();
+        // ⏱️ initial fetch via external async system
+        const timeout = setTimeout(() => {
+            fetchLicenses();
+        }, 0);
+
+        // 🔁 polling subscription
+        const interval = setInterval(() => {
+            fetchLicenses();
+        }, 30000);
+
+        return () => {
+            clearTimeout(timeout);
+            clearInterval(interval);
+        };
     }, [fetchLicenses]);
 
     const handleFilter = (e: React.FormEvent) => {
         e.preventDefault();
         fetchLicenses(1);
+    };
+
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
+
+    const [paymentForm, setPaymentForm] = useState<PaymentForm>({
+        ticket_no: '',
+        amount_payment: '',
+        discount_amount_payment: '',
+        date_transaction: '',
+        official_receipt_no: '',
+        responsible_name: '',
+    });
+
+    const handlePaymentChange = <K extends keyof PaymentForm>(
+        field: K,
+        value: PaymentForm[K],
+    ) => {
+        setPaymentForm((prev) => ({ ...prev, [field]: value }));
+    };
+
+    const submitPayment = async () => {
+        try {
+            await axios.post('/licenses/payment', paymentForm);
+
+            alert('Payment successfully recorded!');
+            setShowPaymentModal(false);
+
+            setPaymentForm({
+                ticket_no: '',
+                amount_payment: '',
+                discount_amount_payment: '',
+                date_transaction: '',
+                official_receipt_no: '',
+                responsible_name: '',
+            });
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+                console.error(err.response?.data);
+            }
+            alert('Failed to save payment.');
+        }
     };
 
     return (
@@ -178,12 +241,13 @@ export default function Licenses() {
                         </SelectContent>
                     </Select>
 
-                    <Link href="/licenses/payment">
-                        <Button type="button">
-                            <PhilippinePeso />
-                            Payment
-                        </Button>
-                    </Link>
+                    <Button
+                        type="button"
+                        onClick={() => setShowPaymentModal(true)}
+                    >
+                        <PhilippinePeso />
+                        Payment
+                    </Button>
 
                     <Link href="/licenses/create">
                         <Button type="button">
@@ -192,6 +256,103 @@ export default function Licenses() {
                         </Button>
                     </Link>
                 </form>
+
+                {showPaymentModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center">
+                        <div className="w-full max-w-lg rounded bg-amber-50 p-6 dark:bg-black">
+                            <h2 className="mb-4 text-lg font-bold">Payment</h2>
+
+                            <Input
+                                className="mb-2 w-full rounded border p-2"
+                                placeholder="Ticket No"
+                                value={paymentForm.ticket_no}
+                                onChange={(e) =>
+                                    handlePaymentChange(
+                                        'ticket_no',
+                                        e.target.value,
+                                    )
+                                }
+                            />
+
+                            <Input
+                                type="number"
+                                className="mb-2 w-full rounded border p-2"
+                                placeholder="Amount Payment"
+                                value={paymentForm.amount_payment}
+                                onChange={(e) =>
+                                    handlePaymentChange(
+                                        'amount_payment',
+                                        Number(e.target.value),
+                                    )
+                                }
+                            />
+
+                            <Input
+                                type="number"
+                                className="mb-2 w-full rounded border p-2"
+                                placeholder="Discount Amount"
+                                value={paymentForm.discount_amount_payment}
+                                onChange={(e) =>
+                                    handlePaymentChange(
+                                        'discount_amount_payment',
+                                        Number(e.target.value),
+                                    )
+                                }
+                            />
+
+                            <Input
+                                type="date"
+                                className="mb-2 w-full rounded border p-2"
+                                value={paymentForm.date_transaction}
+                                onChange={(e) =>
+                                    handlePaymentChange(
+                                        'date_transaction',
+                                        e.target.value,
+                                    )
+                                }
+                            />
+
+                            <Input
+                                className="mb-2 w-full rounded border p-2"
+                                placeholder="Official Receipt No"
+                                value={paymentForm.official_receipt_no}
+                                onChange={(e) =>
+                                    handlePaymentChange(
+                                        'official_receipt_no',
+                                        e.target.value,
+                                    )
+                                }
+                            />
+
+                            <Input
+                                className="mb-4 w-full rounded border p-2"
+                                placeholder="Responsible Name"
+                                value={paymentForm.responsible_name}
+                                onChange={(e) =>
+                                    handlePaymentChange(
+                                        'responsible_name',
+                                        e.target.value,
+                                    )
+                                }
+                            />
+
+                            <div className="flex justify-end gap-2">
+                                <Button
+                                    onClick={() => setShowPaymentModal(false)}
+                                    className="rounded px-4 py-2"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    onClick={submitPayment}
+                                    className="rounded bg-green-600 px-4 py-2"
+                                >
+                                    Save Payment
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* TABLE */}
                 {loading ? (

@@ -137,4 +137,31 @@ class LicenseController extends Controller
     {
         return response()->json($license);
     }
+
+    Public function storePayment(Request $request)
+    {
+        $validated = $request->validate([
+            'ticket_no' => 'required|exists:licenses,ticket_no',
+            'amount_payment' => 'required|numeric|min:0',
+            'discount_amount_payment' => 'nullable|numeric|min:0',
+            'date_transaction' => 'required|date',
+            'official_receipt_no' => 'required|string|max:255',
+            'responsible_name' => 'nullable|string',
+        ]);
+
+        $license = License::where('ticket_no', $validated['ticket_no'])->firstOrFail();
+
+        $license->update([
+            'amount_payment' => $validated['amount_payment'],
+            'discount_amount_payment' => $validated['discount_amount_payment'] ?? 0,
+            'date_transaction' => $validated['date_transaction'],
+            'official_receipt_no' => $validated['official_receipt_no'],
+            'responsible_name' => $validated['responsible_name'] ?? null,
+            'transaction' => 'Paid',
+        ]);
+
+        return response()->json([
+            'message' => 'Payment Recorded successfully',
+        ]);
+    }
 }

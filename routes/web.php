@@ -35,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/licenses', [LicenseController::class, 'index'])->name('licenses.index');
     Route::get('/licenses/create', [LicenseController::class, 'create'])->name('licenses.create');
     Route::post('/licenses', [LicenseController::class, 'store'])->name('licenses.store');
+    Route::post('/licenses/payment', [LicenseController::class, 'storePayment']);
 });
 
 // JSON API route
