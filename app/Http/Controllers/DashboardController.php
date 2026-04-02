@@ -20,10 +20,10 @@ class DashboardController extends Controller
         $licenseCounts = [
             'towing' => License::where('ticket_types', 'Towing Ticket')->count(),
             'ticket' => License::where('ticket_types', 'Traffic Ticket')->count(),
-            'impounded' => License::where('ticket_types', 'Impounded Ticket')->count(),
+            'impounded' => License::where('ticket_types', 'Impounding Ticket')->count(),
             'inventory_towing' => License::where('ticket_types', 'Towing Ticket')->where('Transaction', 'Pending')->count(),
             'inventory_ticket' => License::where('ticket_types', 'Traffic Ticket')->where('Transaction', 'Pending')->count(),
-            'inventory_impounded' => License::where('ticket_types', 'Impounded Ticket')->where('Transaction', 'Pending')->count(),
+            'inventory_impounded' => License::where('ticket_types', 'Impounding Ticket')->where('Transaction', 'Pending')->count(),
         ];
 
         $employeeCount = [

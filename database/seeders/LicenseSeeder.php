@@ -16,7 +16,7 @@ class LicenseSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        $ticketTypes = ['towing', 'ticket', 'impounded'];
+        $ticketTypes = ['Towing Ticket', 'Traffic Ticket', 'Impounding Ticket'];
         $vehicleTypes = ['Single', 'Sedan', 'Truck', 'PUJ', 'Tricycle', 'Bus', 'SUV'];
         $transactionTypes = ['Paid','Pending','Surrender'];
         $offices = ['ACTDO', 'PTRO', 'PNP'];
