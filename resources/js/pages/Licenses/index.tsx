@@ -426,7 +426,7 @@ export default function Licenses() {
                                                     {license.plate_no}
                                                 </TableCell>
 
-                                                <TableCell>
+                                                <TableCell className="break-words whitespace-normal">
                                                     {license.violation}
                                                 </TableCell>
 
@@ -457,7 +457,7 @@ export default function Licenses() {
                                                     </span>
                                                 </TableCell>
 
-                                                <TableCell className="flex gap-2">
+                                                <TableCell className="flex h-full items-center justify-center gap-2">
                                                     {license.transaction ===
                                                         'Pending' && (
                                                         <button

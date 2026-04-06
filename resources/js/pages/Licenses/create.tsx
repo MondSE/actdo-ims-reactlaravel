@@ -452,6 +452,7 @@ export default function LicenseCreate() {
                                         <Label
                                             key={v}
                                             className="flex cursor-pointer items-center gap-1"
+                                            title={v}
                                         >
                                             <input
                                                 type="checkbox"
@@ -461,6 +462,7 @@ export default function LicenseCreate() {
                                                 onChange={() =>
                                                     handleViolationToggle(v)
                                                 }
+                                                title={v}
                                             />
                                             {v}
                                         </Label>
@@ -478,6 +480,7 @@ export default function LicenseCreate() {
                                         <Label
                                             key={v}
                                             className="flex cursor-pointer items-center gap-1"
+                                            title={v}
                                         >
                                             <input
                                                 type="checkbox"
@@ -487,6 +490,7 @@ export default function LicenseCreate() {
                                                 onChange={() =>
                                                     handleViolationToggle(v)
                                                 }
+                                                title={v}
                                             />
                                             {v}
                                         </Label>

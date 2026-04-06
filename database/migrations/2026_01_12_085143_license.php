@@ -14,29 +14,44 @@ return new class extends Migration
         //
         Schema::create('licenses', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('ticket_no');
+
+            // Basic Info
+            $table->bigInteger('ticket_no')->unique();
             $table->string('ticket_types', 30);
-            $table->text('driver_license_no');
-            $table->text('plate_no');
-            $table->text('vehicle_model');
-            $table->text('vehicle_color');
+
             $table->text('full_name');
             $table->text('violation');
-            $table->text('location');
-            $table->date('date_apprehend')->nullable();
-            $table->string('type_vehicle', 10);
-            $table->string('office', 10);
-            $table->bigInteger('amount_payment');
-            $table->bigInteger('discount_amount_payment');
-            $table->date('date_transaction')->nullable();
-            $table->bigInteger('official_receipt_no');
-            $table->text('discount_ticket_no');
-            $table->text('responsible_name');
-            $table->text('transaction')->nullable();
+
+            // Driver / Vehicle Info
+            $table->text('driver_license_no')->nullable();
+            $table->text('plate_no')->nullable();
+            $table->text('vehicle_model')->nullable();
+            $table->text('vehicle_color')->nullable();
+            $table->string('type_vehicle', 50)->nullable();
+            $table->text('public_transport_state')->nullable();
+
+            // Location & Officer
+            $table->text('location')->nullable();
+            $table->text('city')->nullable();
+            $table->string('office', 100);
             $table->string('officer_name', 255);
-            $table->text('remarks');
-            $table->text('city');
-            $table->text('public_transport_state');
+
+            // Dates
+            $table->date('date_apprehend')->nullable();
+
+            // Payment (IMPORTANT FIX)
+            $table->decimal('amount_payment', 10, 2)->default(0);
+            $table->decimal('discount_amount_payment', 10, 2)->default(0);
+            $table->string('official_receipt_no')->nullable();
+            $table->date('date_transaction')->nullable();
+            $table->text('discount_ticket_no')->nullable();
+            $table->text('responsible_name')->nullable();
+
+            // Status
+            $table->string('transaction')->default('Pending');
+
+            // Other
+            $table->text('remarks')->nullable();
 
             $table->timestamps();
         });
