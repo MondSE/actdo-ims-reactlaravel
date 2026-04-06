@@ -21,14 +21,65 @@ class LicenseSeeder extends Seeder
         $transactionTypes = ['Paid','Pending','Surrender'];
         $offices = ['ACTDO', 'PTRO', 'PNP'];
 
+        // Violations lists
+        $movingViolations = [
+            'Reckless Driving',
+            'Over speeding',
+            'Counter Flow',
+            'Over charging',
+            'Using Gadget while Driving',
+            'Colorum',
+            'Illegal Terminal',
+            'Unregistered',
+            'Expired Registration',
+            'Driving Without License',
+            'Invalid Drivers License',
+            'No Color Band/Scheme',
+            'No Panel Route/Body Number',
+            'Refusal to Convey Passenger',
+            'TruckBan',
+            'Cutting Trip',
+            'Smoking While Driving',
+            'Overloading',
+            'No Headlight, Parklight, Signal Light',
+            'Improvised Plate w/ No authority from LTO',
+            'Operating Out of Line',
+            'Modified Muffler',
+            'No Fare Matrix',
+            'No Helmet',
+            'No Seatbelt',
+            'Wearing Slipper',
+            'Sleeveless',
+            'Disregarding traffic/Police Officer',
+            'Arrogant',
+            'No Side Mirror',
+            'Outer Most Lane',
+            'Student Permit',
+            'Driving Motorcyle with Child Passenger',
+        ];
+
+        $nonMovingViolations = [
+            'Obstruction',
+            'Disregarding Traffic Sign/Light',
+            'Loading/Unloading on Prohibited Zone',
+            'Abandonment of Motor Vehicle',
+            'Illegal Parking/Stalled Motor Vehicle',
+            "No Mayor's Permit",
+            'Liqour',
+            'Illegal Drugs',
+            'No Uniform',
+            'Cover Face',
+        ];
+
+        $allViolations = array_merge($movingViolations, $nonMovingViolations);
+
         for ($i = 0; $i < 52560; $i++) {
 
-        // Random date between 2014 and 2025
+            // Random date between 2014 and 2025
             $year = rand(2014, 2025);
             $month = rand(1, 12);
             $day = rand(1, 28); // safe day to avoid invalid dates
             $dateApprehend = sprintf("%04d-%02d-%02d", $year, $month, $day);
-
 
             License::create([
                 'Ticket_No' => $faker->unique()->numberBetween(100000, 999999),
@@ -38,7 +89,7 @@ class LicenseSeeder extends Seeder
                 'Vehicle_Model' => $faker->word(),
                 'Vehicle_Color' => $faker->safeColorName(),
                 'Full_Name' => $faker->name(),
-                'Violation' => $faker->sentence(3),
+                'Violation' => $faker->randomElement($allViolations),
                 'Location' => $faker->city(),
                 'Date_Apprehend' => $dateApprehend,
                 'Type_Vehicle' => $faker->randomElement($vehicleTypes),

@@ -8,6 +8,7 @@ use App\Http\Controllers\LicenseController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\AccidentController;
 use App\Http\Controllers\NotificationController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 
 Route::get('/', function () {
@@ -79,6 +80,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])
         ->name('notifications.markAllAsRead');
+});
+
+use Illuminate\Support\Facades\Mail;
+
+Route::get('/test-mail', function () {
+    Mail::raw('This is a test email.', function ($message) {
+        $message->to('konanlenon@gmail.com')
+                ->subject('Test Email from Laravel');
+    });
+
+    return 'Email sent (or error will show here)';
 });
 
 
