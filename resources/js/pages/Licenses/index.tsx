@@ -461,6 +461,7 @@ export default function Licenses() {
                                                     {license.transaction ===
                                                         'Pending' && (
                                                         <button
+                                                            disabled
                                                             onClick={() =>
                                                                 (window.location.href = `/licenses/${license.id}/edit`)
                                                             }
