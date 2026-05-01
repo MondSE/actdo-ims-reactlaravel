@@ -44,13 +44,13 @@ export default function Welcome({
                             </p>
 
                             <div className="space-y-3">
-                                <div className="rounded border p-4 text-amber-50 dark:border-gray-700">
+                                <div className="rounded border p-4 dark:border-gray-700 dark:text-amber-50">
                                     🚦 Real-time traffic advisories
                                 </div>
-                                <div className="rounded border p-4 text-amber-50 dark:border-gray-700">
+                                <div className="rounded border p-4 dark:border-gray-700 dark:text-amber-50">
                                     🚓 Traffic enforcement updates
                                 </div>
-                                <div className="rounded border p-4 text-amber-50 dark:border-gray-700">
+                                <div className="rounded border p-4 dark:border-gray-700 dark:text-amber-50">
                                     📢 Public announcements & road closures
                                 </div>
                             </div>
